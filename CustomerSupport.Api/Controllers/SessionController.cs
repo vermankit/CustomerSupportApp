@@ -10,9 +10,11 @@ namespace CustomerSupport.Api.Controllers
     public class SessionController : ControllerBase
     {
         private readonly ISessionManagerService _sessionManagerService;
-        public SessionController( ISessionManagerService sessionManagerService)
+        private readonly IAgentService _agentService;
+        public SessionController( ISessionManagerService sessionManagerService, IAgentService agentService)
         {
             _sessionManagerService = sessionManagerService;
+            _agentService = agentService;
         }
 
         [HttpPost("request-support")]
@@ -26,6 +28,27 @@ namespace CustomerSupport.Api.Controllers
                 return StatusCode(StatusCodes.Status503ServiceUnavailable, "Busy");
             }
             return Ok(result);
+        }
+
+        [HttpPost("agent-login")]
+        public IActionResult AgentLogin([FromBody] string name)
+        {
+
+            var agentId = _agentService.GetAgentId(name);
+            if (agentId == Guid.Empty)
+            {
+                return NotFound("Agent Not found");
+            }
+
+            var result = _agentService.UpdateAgentStatus(agentId);
+            return Ok(result);
+        }
+
+        [HttpGet("all")]
+        public IActionResult GetAllActiveSession([FromQuery] Guid agentId)
+        {
+            var userList = _sessionManagerService.GetActiveUser(agentId);
+            return Ok(userList);
         }
 
     }

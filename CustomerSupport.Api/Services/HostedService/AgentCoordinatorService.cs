@@ -16,7 +16,7 @@ namespace CustomerSupport.Api.Services.HostedService
             var timer = new PeriodicTimer(TimeSpan.FromSeconds(30));
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
-                //sessionManager?.CreateChatRoom();
+                sessionManager?.CreateChatRoom();
             }
         }
     }

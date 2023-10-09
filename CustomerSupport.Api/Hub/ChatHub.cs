@@ -1,4 +1,5 @@
-﻿using CustomerSupport.Api.Services.Interface;
+﻿using CustomerSupport.Api.Model;
+using CustomerSupport.Api.Services.Interface;
 
 namespace CustomerSupport.Api.Hub
 {
@@ -21,14 +22,21 @@ namespace CustomerSupport.Api.Hub
             return Task.CompletedTask;
         }
 
+        
+        public void UpdateAgentConnectionId(Guid agentId)
+        {
+            _agentService.UpdateConnectionId(Context.ConnectionId, agentId);
+            _sessionManagerService.UpdateAgentConnectionId(Context.ConnectionId, agentId);
+        }
+
         /// <summary>
         /// This will be called by Customer window 
         /// </summary>
         /// <param name="userid"></param>
-        public void ConnectToAgent(Guid userid)
+        public AgentDto ConnectToAgent(Guid userid)
         {
             var result =  _sessionManagerService.ConnectToAgent(Context.ConnectionId,userid);
-            Clients.Caller.AssignAgent(result);
+            return result;
         }
 
         public void GetAssignedCustomers(Guid agentId)
@@ -40,6 +48,7 @@ namespace CustomerSupport.Api.Hub
         {
             return Context.ConnectionId;
         }
+
 
         public async Task SendMessage(string message)
         {

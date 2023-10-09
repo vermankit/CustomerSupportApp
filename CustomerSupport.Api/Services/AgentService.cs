@@ -56,6 +56,7 @@ namespace CustomerSupport.Api.Services
 
             foreach (var agent in availableAgents)
             {
+                agent.Capacity = Convert.ToInt32(_seniorityCapacityMapping[agent.Seniority] * 10);
                 agent.IsAvailable = true;
             }
 
@@ -82,5 +83,69 @@ namespace CustomerSupport.Api.Services
         {
             return Convert.ToInt32(_teamCapacity * 10);
         }
+
+        public Guid UpdateAgentStatus(Guid agentId)
+        {
+            var agent = _agents.FirstOrDefault(agent => agent.Id.Equals(agentId));
+            return agent.Id;
+        }
+
+        public Guid GetAgentId(string name)
+        {
+            var agent = _agents.FirstOrDefault(agent => agent.Name.Equals(name) && agent.IsAvailable);
+            if (agent == null)
+            {
+                return Guid.Empty;
+            }
+
+            return agent.Id;
+        }
+
+        public void UpdateConnectionId(string contextConnectionId, Guid agentId)
+        {
+            var agent = _agents.FirstOrDefault(agent => agent.Id.Equals(agentId));
+            agent.ConnectionId = contextConnectionId;
+        }
+
+        public Agent GetAvailableAgent()
+        {
+            var availableAgents = _agents
+                .Where(agent => agent.IsAvailable && agent.IsOnline)
+                .OrderByDescending(agent => agent.Seniority)
+                .ToList();
+
+         
+            var juniorAgent = availableAgents.FirstOrDefault(agent => agent.Seniority == Seniority.Junior);
+            if (juniorAgent != null)
+            {
+                juniorAgent.IsAvailable = false;
+                return juniorAgent;
+            }
+
+            var midLevelAgent = availableAgents.FirstOrDefault(agent => agent.Seniority == Seniority.Mid);
+            if (midLevelAgent != null)
+            {
+                midLevelAgent.IsAvailable = false; 
+                return midLevelAgent;
+            }
+
+         
+            var seniorAgent = availableAgents.FirstOrDefault(agent => agent.Seniority == Seniority.Senior);
+            if (seniorAgent != null)
+            {
+                seniorAgent.IsAvailable = false; 
+                return seniorAgent;
+            }
+
+            var leadAgent = availableAgents.FirstOrDefault(agent => agent.Seniority == Seniority.Lead);
+            if (leadAgent != null)
+            {
+                leadAgent.IsAvailable = false;
+                return leadAgent;
+            }
+
+            return null;
+        }
+
     }
 }

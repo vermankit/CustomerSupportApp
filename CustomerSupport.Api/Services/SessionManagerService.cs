@@ -1,14 +1,13 @@
-﻿using CustomerSupport.Api.Model;
+﻿using CustomerSupport.Api.Common;
+using CustomerSupport.Api.Model;
 using CustomerSupport.Api.Services.Interface;
-using System.Xml.Linq;
-using CustomerSupport.Api.Common;
 
 namespace CustomerSupport.Api.Services
 {
     public class SessionManagerService : ISessionManagerService
     {
         private static readonly Queue<UserSession> UserSessions = new();
-        private static readonly List<ChatSession> ChatSessionsList = new();
+        private static readonly List<ChatSession> ChatSessions = new();
         private readonly IAgentService _agentService;
         public SessionManagerService(IAgentService agentService)
         {
@@ -39,17 +38,32 @@ namespace CustomerSupport.Api.Services
         public void CreateChatRoom()
         {
             var concurrentChat = _agentService.GetConcurrentChatCapacity();
-            var liveChatSession = ChatSessionsList.Count();
+            var liveChatSession = ChatSessions.Count();
 
-            if (liveChatSession < concurrentChat)
+            if (UserSessions.Any() && liveChatSession < concurrentChat)
             {
-                //Assign agent here
+                var lastUserSession = UserSessions.Dequeue();
+                var agent = _agentService.GetAvailableAgent();
+                if (agent != null)
+                {
+                    var chatSession = new ChatSession
+                    {
+                        AgentConnectionId = agent.ConnectionId,
+                        AgentName = agent.Name,
+                        ClientConnectionId = lastUserSession.ClientConnectionId,
+                        CustomerName = lastUserSession.CustomerName,
+                        AgentId = agent.Id,
+                        UserId = lastUserSession.Id,
+                        SessionId = Guid.NewGuid(),
+                    };
+                    ChatSessions.Add(chatSession);
+                }
             }
         }
 
         public AgentDto ConnectToAgent(string contextConnectionId,Guid userId)
         {
-            var chatSession = ChatSessionsList.FirstOrDefault(session => session.UserId == userId);
+            var chatSession = ChatSessions.FirstOrDefault(session => session.UserId == userId);
             if (chatSession == null) return null;
             chatSession.ClientConnectionId = contextConnectionId;
             return new AgentDto
@@ -63,7 +77,7 @@ namespace CustomerSupport.Api.Services
 
         public string GetUserConnectionId(Guid userId)
         {
-            var chatSession = ChatSessionsList.FirstOrDefault(session => session.UserId == userId);
+            var chatSession = ChatSessions.FirstOrDefault(session => session.UserId == userId);
             if (chatSession == null)
             {
                 throw new InvalidOperationException("InActiveUser");
@@ -73,12 +87,30 @@ namespace CustomerSupport.Api.Services
 
         public string GetAgentConnectionId(Guid agentId)
         {
-            var chatSession = ChatSessionsList.FirstOrDefault(session => session.AgentId == agentId);
+            var chatSession = ChatSessions.FirstOrDefault(session => session.AgentId == agentId);
             if (chatSession == null)
             {
                 throw new InvalidOperationException("InActiveAgent");
             }
             return chatSession.AgentConnectionId;
+        }
+
+        public void UpdateAgentConnectionId(string contextConnectionId, Guid agentId)
+        {
+            var activeSession = ChatSessions.Where(session => session.AgentId == agentId);
+            foreach (var session in activeSession)
+            {
+                session.AgentConnectionId = contextConnectionId;
+            }
+        }
+
+        public List<UserDto> GetActiveUser(Guid agentId)
+        {
+            return ChatSessions.Where(session => session.AgentId == agentId).Select((c) => new UserDto()
+            {
+                Id = c.UserId,
+                Name = c.CustomerName
+            }).ToList();
         }
     }
 }
