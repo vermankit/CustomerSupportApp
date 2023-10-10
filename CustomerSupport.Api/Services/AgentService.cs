@@ -57,7 +57,7 @@ namespace CustomerSupport.Api.Services
             foreach (var agent in availableAgents)
             {
                 agent.Capacity = Convert.ToInt32(_seniorityCapacityMapping[agent.Seniority] * 10);
-                agent.IsAvailable = true;
+                agent.IsPresent = true;
             }
 
             AssignCapacity();
@@ -67,10 +67,10 @@ namespace CustomerSupport.Api.Services
         private void AssignCapacity()
         {
 
-            var lead = _agents.Count(agent => agent.Seniority == Seniority.Lead && agent.IsAvailable);
-            var senior = _agents.Count(agent => agent.Seniority == Seniority.Senior && agent.IsAvailable);
-            var mid = _agents.Count(agent => agent.Seniority == Seniority.Mid && agent.IsAvailable);
-            var junior = _agents.Count(agent => agent.Seniority == Seniority.Junior && agent.IsAvailable);
+            var lead = _agents.Count(agent => agent.Seniority == Seniority.Lead && agent.IsPresent);
+            var senior = _agents.Count(agent => agent.Seniority == Seniority.Senior && agent.IsPresent);
+            var mid = _agents.Count(agent => agent.Seniority == Seniority.Mid && agent.IsPresent);
+            var junior = _agents.Count(agent => agent.Seniority == Seniority.Junior && agent.IsPresent);
 
             _teamCapacity = (lead * _seniorityCapacityMapping[Seniority.Lead])
                             + (senior * _seniorityCapacityMapping[Seniority.Senior])
@@ -92,7 +92,7 @@ namespace CustomerSupport.Api.Services
 
         public Guid GetAgentId(string name)
         {
-            var agent = _agents.FirstOrDefault(agent => agent.Name.Equals(name) && agent.IsAvailable);
+            var agent = _agents.FirstOrDefault(agent => agent.Name.Equals(name) && agent.IsPresent);
             if (agent == null)
             {
                 return Guid.Empty;
@@ -110,7 +110,7 @@ namespace CustomerSupport.Api.Services
         public Agent GetAvailableAgent()
         {
             var availableAgents = _agents
-                .Where(agent => agent.IsAvailable && agent.IsOnline)
+                .Where(agent => agent.IsPresent && agent.IsOnline && agent.IsAvailable)
                 .OrderByDescending(agent => agent.Seniority)
                 .ToList();
 
@@ -118,14 +118,14 @@ namespace CustomerSupport.Api.Services
             var juniorAgent = availableAgents.FirstOrDefault(agent => agent.Seniority == Seniority.Junior);
             if (juniorAgent != null)
             {
-                juniorAgent.IsAvailable = false;
+                juniorAgent.LiveSession++;
                 return juniorAgent;
             }
 
             var midLevelAgent = availableAgents.FirstOrDefault(agent => agent.Seniority == Seniority.Mid);
             if (midLevelAgent != null)
             {
-                midLevelAgent.IsAvailable = false; 
+                midLevelAgent.LiveSession++; 
                 return midLevelAgent;
             }
 
@@ -133,14 +133,14 @@ namespace CustomerSupport.Api.Services
             var seniorAgent = availableAgents.FirstOrDefault(agent => agent.Seniority == Seniority.Senior);
             if (seniorAgent != null)
             {
-                seniorAgent.IsAvailable = false; 
+                seniorAgent.LiveSession++; 
                 return seniorAgent;
             }
 
             var leadAgent = availableAgents.FirstOrDefault(agent => agent.Seniority == Seniority.Lead);
             if (leadAgent != null)
             {
-                leadAgent.IsAvailable = false;
+                leadAgent.LiveSession++;
                 return leadAgent;
             }
 

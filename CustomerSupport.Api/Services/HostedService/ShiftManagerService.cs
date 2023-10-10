@@ -13,7 +13,12 @@ namespace CustomerSupport.Api.Services.HostedService
         {
             using var workScope = _serviceScopeFactory.CreateScope();
             var agentService = workScope.ServiceProvider.GetService<IAgentService>();
-            var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+
+            // Run the ChangeShift() method once immediately
+            agentService?.ChangeShift();
+
+
+            var timer = new PeriodicTimer(TimeSpan.FromMinutes(5));
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
                 agentService?.ChangeShift();

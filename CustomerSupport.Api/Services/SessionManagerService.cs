@@ -112,5 +112,10 @@ namespace CustomerSupport.Api.Services
                 Name = c.CustomerName
             }).ToList();
         }
+
+        public void RemoveActiveSession(string contextConnectionId)
+        {
+            ChatSessions.RemoveAll(session => session.ClientConnectionId == contextConnectionId);
+        }
     }
 }

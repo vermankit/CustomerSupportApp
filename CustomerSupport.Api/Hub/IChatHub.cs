@@ -6,6 +6,7 @@ namespace CustomerSupport.Api.Hub
     {
         Task AssignAgent(AgentDto agentDto);
         Task ReceiveMessage(string message);
+        Task ReceiveMessageWithUserId(Guid userId,string message);
 
     }
 }

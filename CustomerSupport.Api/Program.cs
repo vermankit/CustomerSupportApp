@@ -64,28 +64,28 @@ namespace CustomerSupport.Api
                             // In real it will come from database
 
                             // Team A
-                            new() { Name = "Agent1", IsAvailable = false, Seniority = Seniority.Lead, Team = "TeamA", Shift = "Morning" },
-                            new() { Name = "Agent2", IsAvailable = false, Seniority = Seniority.Mid, Team = "TeamA", Shift = "Morning" },
-                            new() { Name = "Agent3", IsAvailable = false, Seniority = Seniority.Mid, Team = "TeamA", Shift = "Morning" },
-                            new() { Name = "Agent4", IsAvailable = false, Seniority = Seniority.Junior, Team = "TeamA", Shift = "Morning" },
+                            new() { Name = "Agent1", IsPresent = false, Seniority = Seniority.Lead, Team = "TeamA", Shift = "Morning" },
+                            new() { Name = "Agent2", IsPresent = false, Seniority = Seniority.Mid, Team = "TeamA", Shift = "Morning" },
+                            new() { Name = "Agent3", IsPresent = false, Seniority = Seniority.Mid, Team = "TeamA", Shift = "Morning" },
+                            new() { Name = "Agent4", IsPresent = false, Seniority = Seniority.Junior, Team = "TeamA", Shift = "Morning" },
 
                             // Team B
-                            new() { Name = "Agent5", IsAvailable = false, Seniority = Seniority.Senior, Team = "TeamB", Shift = "Afternoon" },
-                            new() { Name = "Agent6", IsAvailable = false, Seniority = Seniority.Mid, Team = "TeamB", Shift = "Afternoon" },
-                            new() { Name = "Agent7", IsAvailable = false, Seniority = Seniority.Junior, Team = "TeamB", Shift = "Afternoon" },
-                            new() { Name = "Agent8", IsAvailable = false, Seniority = Seniority.Junior, Team = "TeamB", Shift = "Afternoon" }, 
+                            new() { Name = "Agent5", IsPresent = false, Seniority = Seniority.Senior, Team = "TeamB", Shift = "Afternoon" },
+                            new() { Name = "Agent6", IsPresent = false, Seniority = Seniority.Mid, Team = "TeamB", Shift = "Afternoon" },
+                            new() { Name = "Agent7", IsPresent = false, Seniority = Seniority.Junior, Team = "TeamB", Shift = "Afternoon" },
+                            new() { Name = "Agent8", IsPresent = false, Seniority = Seniority.Junior, Team = "TeamB", Shift = "Afternoon" }, 
 
                             // Team C (Night Shift)
-                            new() { Name = "Agent9", IsAvailable = false, Seniority = Seniority.Mid, Team = "TeamC", Shift = "Night" },
-                            new() { Name = "Agent10", IsAvailable = false, Seniority = Seniority.Mid, Team = "TeamC", Shift = "Night" },
+                            new() { Name = "Agent9", IsPresent = false, Seniority = Seniority.Mid, Team = "TeamC", Shift = "Night" },
+                            new() { Name = "Agent10", IsPresent = false, Seniority = Seniority.Mid, Team = "TeamC", Shift = "Night" },
 
                             // Overflow Team
-                            new() { Name = "Agent11", IsAvailable = false, Seniority = Seniority.Junior, Team = "Overflow", Shift = "Morning,Afternoon" },
-                            new() { Name = "Agent12", IsAvailable = false, Seniority = Seniority.Junior, Team = "Overflow", Shift = "Morning,Afternoon" },
-                            new() { Name = "Agent13", IsAvailable = false, Seniority = Seniority.Junior, Team = "Overflow", Shift = "Morning,Afternoon" },
-                            new() { Name = "Agent14", IsAvailable = false, Seniority = Seniority.Junior, Team = "Overflow", Shift = "Morning,Afternoon" },
-                            new() { Name = "Agent15", IsAvailable = false, Seniority = Seniority.Junior, Team = "Overflow", Shift = "Morning,Afternoon" },
-                            new() { Name = "Agent16", IsAvailable = false, Seniority = Seniority.Junior, Team = "Overflow", Shift = "Morning,Afternoon" },
+                            new() { Name = "Agent11", IsPresent = false, Seniority = Seniority.Junior, Team = "Overflow", Shift = "Morning,Afternoon" },
+                            new() { Name = "Agent12", IsPresent = false, Seniority = Seniority.Junior, Team = "Overflow", Shift = "Morning,Afternoon" },
+                            new() { Name = "Agent13", IsPresent = false, Seniority = Seniority.Junior, Team = "Overflow", Shift = "Morning,Afternoon" },
+                            new() { Name = "Agent14", IsPresent = false, Seniority = Seniority.Junior, Team = "Overflow", Shift = "Morning,Afternoon" },
+                            new() { Name = "Agent15", IsPresent = false, Seniority = Seniority.Junior, Team = "Overflow", Shift = "Morning,Afternoon" },
+                            new() { Name = "Agent16", IsPresent = false, Seniority = Seniority.Junior, Team = "Overflow", Shift = "Morning,Afternoon" },
                         };
         }
     }

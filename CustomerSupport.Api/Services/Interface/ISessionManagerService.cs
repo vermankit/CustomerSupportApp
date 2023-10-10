@@ -11,5 +11,6 @@ namespace CustomerSupport.Api.Services.Interface
         string GetAgentConnectionId(Guid agentId);
         void UpdateAgentConnectionId(string contextConnectionId, Guid agentId);
         List<UserDto> GetActiveUser(Guid agentId);
+        void RemoveActiveSession(string contextConnectionId);
     }
 }

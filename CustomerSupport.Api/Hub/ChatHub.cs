@@ -1,5 +1,6 @@
 ﻿using CustomerSupport.Api.Model;
 using CustomerSupport.Api.Services.Interface;
+using System.Diagnostics;
 
 namespace CustomerSupport.Api.Hub
 {
@@ -19,10 +20,13 @@ namespace CustomerSupport.Api.Hub
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            return Task.CompletedTask;
+            // do the logging here
+            Trace.WriteLine(Context.ConnectionId);
+            _sessionManagerService.RemoveActiveSession(Context.ConnectionId);
+            return base.OnDisconnectedAsync(exception);
         }
 
-        
+
         public void UpdateAgentConnectionId(Guid agentId)
         {
             _agentService.UpdateConnectionId(Context.ConnectionId, agentId);
@@ -70,13 +74,16 @@ namespace CustomerSupport.Api.Hub
         /// <summary>
         /// This will be used to send message to agent
         /// </summary>
+        /// <param name="userId"></param>
         /// <param name="agentId"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        public async Task SendMessageToAgent(Guid agentId, string message)
+        public async Task SendMessageToAgent(Guid userId,Guid agentId, string message)
         {
             var connectionId = _sessionManagerService.GetAgentConnectionId(agentId);
-            await Clients.Client(connectionId).ReceiveMessage(message);
+            await Clients.Client(connectionId).ReceiveMessageWithUserId(userId, message);
         }
+
+        
     }
 }
