@@ -15,7 +15,7 @@ namespace CustomerSupport.Api.Entity
         public int Capacity { get; set; }
         public bool IsOnline => !string.IsNullOrWhiteSpace(ConnectionId);
         public int LiveSession { get; set; }
-        public bool IsAvailable => LiveSession <= 10;
+        public bool IsAvailable => LiveSession < 10;
 
     }
 }

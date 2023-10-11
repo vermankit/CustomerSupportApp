@@ -118,14 +118,14 @@ namespace CustomerSupport.Api.Services
             var juniorAgent = availableAgents.FirstOrDefault(agent => agent.Seniority == Seniority.Junior);
             if (juniorAgent != null)
             {
-                juniorAgent.LiveSession++;
+                ++juniorAgent.LiveSession;
                 return juniorAgent;
             }
 
             var midLevelAgent = availableAgents.FirstOrDefault(agent => agent.Seniority == Seniority.Mid);
             if (midLevelAgent != null)
             {
-                midLevelAgent.LiveSession++; 
+                ++midLevelAgent.LiveSession; 
                 return midLevelAgent;
             }
 
@@ -133,14 +133,14 @@ namespace CustomerSupport.Api.Services
             var seniorAgent = availableAgents.FirstOrDefault(agent => agent.Seniority == Seniority.Senior);
             if (seniorAgent != null)
             {
-                seniorAgent.LiveSession++; 
+                ++seniorAgent.LiveSession; 
                 return seniorAgent;
             }
 
             var leadAgent = availableAgents.FirstOrDefault(agent => agent.Seniority == Seniority.Lead);
             if (leadAgent != null)
             {
-                leadAgent.LiveSession++;
+                ++leadAgent.LiveSession;
                 return leadAgent;
             }
 

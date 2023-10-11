@@ -8,6 +8,7 @@ namespace CustomerSupport.Api.Services
     {
         private static readonly Queue<UserSession> UserSessions = new();
         private static readonly List<ChatSession> ChatSessions = new();
+        private static readonly Dictionary<Guid, DateTime> PollDic = new();
         private readonly IAgentService _agentService;
         public SessionManagerService(IAgentService agentService)
         {
@@ -55,8 +56,9 @@ namespace CustomerSupport.Api.Services
                         AgentId = agent.Id,
                         UserId = lastUserSession.Id,
                         SessionId = Guid.NewGuid(),
+                        IsActive= true,
                     };
-                    ChatSessions.Add(chatSession);
+                    ChatSessions.Add(chatSession);                     
                 }
             }
         }
@@ -65,7 +67,7 @@ namespace CustomerSupport.Api.Services
         {
             var chatSession = ChatSessions.FirstOrDefault(session => session.UserId == userId);
             if (chatSession == null) return null;
-            chatSession.ClientConnectionId = contextConnectionId;
+            chatSession.ClientConnectionId = contextConnectionId;           
             return new AgentDto
             {
                 Id = chatSession.AgentId,
@@ -113,9 +115,61 @@ namespace CustomerSupport.Api.Services
             }).ToList();
         }
 
-        public void RemoveActiveSession(string contextConnectionId)
+
+        public void RemoveUserSession(string contextConnectionId)
         {
-            ChatSessions.RemoveAll(session => session.ClientConnectionId == contextConnectionId);
+
+            var session = ChatSessions.FirstOrDefault(session => session.ClientConnectionId == contextConnectionId);
+            if(session != null)
+            session.IsActive= false;
+        }
+
+        public void RemoveAgentSession(string contextConnectionId)
+        {   
+            var sessions = ChatSessions.Where(session => session.AgentConnectionId == contextConnectionId);
+            foreach (var session in sessions)
+            {
+                if(session != null)
+                session.IsActive = false;
+            }
+        }
+
+        public bool IsSessionActive(Guid userId)
+        {
+            return ChatSessions.Any(session => session.UserId == userId);
+        }
+
+        public bool IsUserSession(string connectionId)
+        {
+            return ChatSessions.Any(session => session.ClientConnectionId == connectionId);
+        }
+
+        public bool IAgentSession(string connectionId)
+        {
+            return ChatSessions.Any(session => session.AgentConnectionId == connectionId);
+        }
+
+        public List<string> GetActiveUserConnection(string connectionId)
+        {
+            return ChatSessions.Where(session => session.AgentConnectionId == connectionId).Select(x => x.ClientConnectionId).ToList(); 
+        }
+
+        public bool UpdatePollTime(Guid userId)
+        {
+            PollDic[userId] = DateTime.Now;
+            return true;
+        }
+
+        public void ClearSession()
+        {
+            //DateTime currentTime = DateTime.Now;
+            //var userIds = PollDic
+            //    .Where(kv => (currentTime - kv.Value).TotalSeconds > 10)
+            //    .Select(kv => kv.Key)
+            //    .ToList();
+            
+            ChatSessions.RemoveAll(session => !session.IsActive);
+
         }
     }
 }

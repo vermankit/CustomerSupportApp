@@ -51,5 +51,12 @@ namespace CustomerSupport.Api.Controllers
             return Ok(userList);
         }
 
+        [HttpGet("Poll")]
+        public IActionResult Poll([FromQuery] Guid userId)
+        {
+            var result = _sessionManagerService.IsSessionActive(userId);
+            return Ok(result);
+        }
+
     }
 }

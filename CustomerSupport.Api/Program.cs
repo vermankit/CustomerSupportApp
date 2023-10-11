@@ -38,6 +38,7 @@ namespace CustomerSupport.Api
             builder.Services.AddSingleton<ISessionManagerService, SessionManagerService>();
             builder.Services.AddHostedService<ShiftManagerService>();
             builder.Services.AddHostedService<AgentCoordinatorService>();
+            builder.Services.AddHostedService<SessionMoniterService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
