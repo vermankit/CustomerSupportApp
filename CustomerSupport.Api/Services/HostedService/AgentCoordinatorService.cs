@@ -13,7 +13,7 @@ namespace CustomerSupport.Api.Services.HostedService
         {
             using var workScope = _serviceScopeFactory.CreateScope();
             var sessionManager = workScope.ServiceProvider.GetService<ISessionManagerService>();
-            var timer = new PeriodicTimer(TimeSpan.FromSeconds(30));
+            var timer = new PeriodicTimer(TimeSpan.FromSeconds(5));
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
                 sessionManager?.CreateChatRoom();
